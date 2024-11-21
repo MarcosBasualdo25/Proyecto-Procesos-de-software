@@ -41,28 +41,35 @@ public class Ruta {
             e.printStackTrace();
         }
     }
-    public void agregar(){
+    private boolean esRutaValida(String lugarInicio, String lugarDestino) {
+        if (lugarInicio.equalsIgnoreCase(lugarDestino)) {
+            JOptionPane.showMessageDialog(null, "Lugar de inicio y destino no pueden ser iguales!");
+            return false;
+        }
+        return true;
+    }
+    public void agregar() {
         String LugarInicio = ventanaRuta.txtfLugarInicio.getText();
         String LugarDestino = ventanaRuta.txtfLugarDestino.getText();
         
-        try{
-            //Revisamos si algun txtfield está vacío
-            if(LugarInicio.equals("") || LugarDestino.equals("")){
+        try {
+            // Verificamos si algún txtfield está vacío
+            if (LugarInicio.equals("") || LugarDestino.equals("")) {
                 JOptionPane.showMessageDialog(null, "Faltan ingresar datos!");
-            }
-            else{
-                //Agregamos a la persona a la tabla persona
-                String sql1 =  "INSERT INTO Ruta(LugarInicio,LugarDestino) VALUES('"+LugarInicio+"','"+LugarDestino+"')";
+            } 
+            // Llamamos a la función para verificar si la ruta es válida
+            else if (esRutaValida(LugarInicio, LugarDestino)) {
+                // Agregamos la ruta a la tabla Ruta
+                String sql1 = "INSERT INTO Ruta(LugarInicio, LugarDestino) VALUES('" + LugarInicio + "','" + LugarDestino + "')";
                 conet = con.obtenerConexion();
                 st = conet.createStatement();
                 st.executeUpdate(sql1, Statement.RETURN_GENERATED_KEYS);
                 JOptionPane.showMessageDialog(null, "Nueva ruta agregada!");
                 nuevo();
+                limpiarTabla();
             }
-            
-            limpiarTabla();
-        }catch(Exception e){
-            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Ocurrió un error al agregar la ruta: " + e.getMessage());
         }
     }
     public void modificar(){
